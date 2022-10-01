@@ -45,7 +45,7 @@ export const Header = ({ socketId, user, onJoined, onLeft }: Props) => {
 
   return (
     <Flex
-      bg={"whiteAlpha.300"}
+      bg={"whiteAlpha.100"}
       borderRadius={"md"}
       p={4}
       justifyContent={"space-between"}

@@ -17,13 +17,13 @@ export const Messages = ({ data }: Props) => {
   }, [data]);
 
   return (
-    <Stack flex={1} bg={"whiteAlpha.300"} borderRadius={"md"} p={4}>
+    <Stack flex={1} bg={"whiteAlpha.100"} borderRadius={"md"} p={4}>
       <Heading>Messages</Heading>
       <Stack ref={ref} overflowY={"scroll"} height={"100%"} p={2}>
         {data.map(({ date, from, value }, index) => (
           <Fragment key={index}>
             {!value.startsWith("/me") ? (
-              <Stack bg={"whiteAlpha.300"} borderRadius={"md"} p={2}>
+              <Stack bg={"whiteAlpha.100"} borderRadius={"md"} p={2}>
                 <Flex justifyContent={"space-between"}>
                   <UserTag level={from.level}>{from.displayName}</UserTag>
                   <Text>{new Date(date).toLocaleTimeString()}</Text>

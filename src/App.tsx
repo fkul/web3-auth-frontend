@@ -36,7 +36,7 @@ const App = () => {
 
   return (
     <Container
-      bg={"blue.500"}
+      bg={"blue.800"}
       maxW={"container.lg"}
       p={4}
       mt={6}

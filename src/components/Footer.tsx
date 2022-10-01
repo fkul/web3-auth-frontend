@@ -23,7 +23,7 @@ export const Footer = ({ user }: Props) => {
   };
 
   return (
-    <Box bg={"whiteAlpha.300"} borderRadius={"md"} p={4}>
+    <Box bg={"whiteAlpha.100"} borderRadius={"md"} p={4}>
       <HStack
         as={"form"}
         onSubmit={(e) => {

@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const Users = ({ data }: Props) => (
-  <Stack bg={"whiteAlpha.300"} borderRadius={"md"} p={4} w={"sm"}>
+  <Stack bg={"whiteAlpha.100"} borderRadius={"md"} p={4} w={"sm"}>
     <Heading>Connected users</Heading>
     {data.map(({ level, displayName }, index) => (
       <UserTag key={index} level={level}>
