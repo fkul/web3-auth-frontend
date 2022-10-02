@@ -10,7 +10,7 @@ import { Footer } from "./components/Footer";
 const socket = io(process.env.REACT_APP_BACKEND_URL ?? "");
 
 const App = () => {
-  const [user, setUser] = React.useState<Nullable<User>>(null);
+  const [currentUser, setCurrentUser] = React.useState<Nullable<User>>(null);
   const [users, setUsers] = React.useState<User[]>([]);
   const [messages, setMessages] = React.useState<Message[]>([]);
 
@@ -34,26 +34,27 @@ const App = () => {
     };
   }, []);
 
+  React.useEffect(() => {
+    setCurrentUser(
+      users.find(({ socketId }) => socketId === socket.id) ?? null
+    );
+  }, [users]);
+
   return (
     <Container
       bg={"blue.800"}
-      maxW={"container.lg"}
+      maxW={"container.xl"}
       p={4}
       mt={6}
       borderRadius={"md"}
     >
       <Stack>
-        <Header
-          socketId={socket.id}
-          user={user}
-          onJoined={setUser}
-          onLeft={() => setUser(null)}
-        />
+        <Header socketId={socket.id} user={currentUser} />
         <HStack height={"60vh"} alignItems={"stretch"}>
           <Messages data={messages} />
           <Users data={users} />
         </HStack>
-        <Footer user={user} />
+        <Footer user={currentUser} />
       </Stack>
     </Container>
   );

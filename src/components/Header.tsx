@@ -1,32 +1,27 @@
-import {
-  Button,
-  ButtonGroup,
-  Flex,
-  HStack,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Button, HStack, Stack, Text, VStack } from "@chakra-ui/react";
+import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import axios from "axios";
+import React from "react";
+import { useAccount } from "wagmi";
 import { Nullable, User } from "../types";
 import { UserTag } from "./UserTag";
 
 interface Props {
   socketId: string;
   user: Nullable<User>;
-  onJoined: (user: User) => void;
-  onLeft: () => void;
 }
 
-export const Header = ({ socketId, user, onJoined, onLeft }: Props) => {
+export const Header = ({ socketId, user }: Props) => {
+  const { openConnectModal } = useConnectModal();
+  const { openAccountModal } = useAccountModal();
+  const { address } = useAccount();
+
   const onJoin = async () => {
     try {
-      const { data } = await axios.post<User>(
-        process.env.REACT_APP_BACKEND_URL + "/join",
-        {
-          socketId,
-        }
-      );
-      onJoined(data);
+      await axios.post(process.env.REACT_APP_BACKEND_URL + "/join", {
+        socketId,
+        address,
+      });
     } catch (e) {
       console.error(e);
     }
@@ -37,14 +32,18 @@ export const Header = ({ socketId, user, onJoined, onLeft }: Props) => {
       await axios.post(process.env.REACT_APP_BACKEND_URL + "/leave", {
         user,
       });
-      onLeft();
     } catch (e) {
       console.error(e);
     }
   };
 
+  React.useEffect(() => {
+    user && onJoin();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
+
   return (
-    <Flex
+    <HStack
       bg={"whiteAlpha.100"}
       borderRadius={"md"}
       p={4}
@@ -74,12 +73,21 @@ export const Header = ({ socketId, user, onJoined, onLeft }: Props) => {
           </UserTag>
         </HStack>
       </Stack>
-      <ButtonGroup>
-        <Button onClick={!user ? onJoin : onLeave}>
+      <VStack alignItems={"flex-end"}>
+        {openConnectModal && (
+          <Button size={"sm"} onClick={openConnectModal}>
+            Connect Wallet
+          </Button>
+        )}
+        {openAccountModal && (
+          <Button size={"sm"} onClick={openAccountModal}>
+            {address}
+          </Button>
+        )}
+        <Button size={"sm"} onClick={!user ? onJoin : onLeave}>
           {!user ? `Join` : `Leave`} Chat
         </Button>
-        <Button>Connect Wallet</Button>
-      </ButtonGroup>
-    </Flex>
+      </VStack>
+    </HStack>
   );
 };

@@ -1,5 +1,5 @@
 import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
-import { Fragment, useEffect, useRef } from "react";
+import React from "react";
 import { Message } from "../types";
 import { UserTag } from "./UserTag";
 
@@ -8,9 +8,9 @@ interface Props {
 }
 
 export const Messages = ({ data }: Props) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = React.useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (ref.current) {
       ref.current.scrollTop = ref.current.scrollHeight;
     }
@@ -21,7 +21,7 @@ export const Messages = ({ data }: Props) => {
       <Heading>Messages</Heading>
       <Stack ref={ref} overflowY={"scroll"} height={"100%"} p={2}>
         {data.map(({ date, from, value }, index) => (
-          <Fragment key={index}>
+          <React.Fragment key={index}>
             {!value.startsWith("/me") ? (
               <Stack bg={"whiteAlpha.100"} borderRadius={"md"} p={2}>
                 <Flex justifyContent={"space-between"}>
@@ -35,7 +35,7 @@ export const Messages = ({ data }: Props) => {
                 {value.replace("/me", from.displayName)}
               </Box>
             )}
-          </Fragment>
+          </React.Fragment>
         ))}
       </Stack>
     </Stack>
