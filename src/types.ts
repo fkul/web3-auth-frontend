@@ -1,6 +1,10 @@
 export type Nullable<T> = T | null;
 
-export type UserLevel = "anonymous" | "connected" | "authenticated" | "vip";
+export type UserLevel =
+  | "anonymous"
+  | "connected"
+  | "authenticated"
+  | "moderator";
 
 export interface User {
   socketId: string;

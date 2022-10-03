@@ -5,7 +5,7 @@ const levelColors: Record<UserLevel, string> = {
   anonymous: "gray",
   connected: "purple",
   authenticated: "green",
-  vip: "yellow",
+  moderator: "yellow",
 };
 
 interface Props extends TagProps {

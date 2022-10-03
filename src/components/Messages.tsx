@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import { Flex, Heading, HStack, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import { Message } from "../types";
 import { UserTag } from "./UserTag";
@@ -31,9 +31,10 @@ export const Messages = ({ data }: Props) => {
                 <Text>{value}</Text>
               </Stack>
             ) : (
-              <Box fontStyle={"italic"}>
-                {value.replace("/me", from.displayName)}
-              </Box>
+              <HStack fontStyle={"italic"} spacing={1}>
+                <Text color={"whiteAlpha.500"}>{from.displayName}</Text>
+                <Text>{value.replace("/me", "")}</Text>
+              </HStack>
             )}
           </React.Fragment>
         ))}

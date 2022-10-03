@@ -12,11 +12,14 @@ export const Footer = ({ user }: Props) => {
 
   const onSend = async () => {
     try {
-      await axios.post(process.env.REACT_APP_BACKEND_URL + "/message", {
-        date: new Date(),
-        from: user,
-        value: messageValue,
-      });
+      await axios.post(
+        process.env.REACT_APP_BACKEND_URL + "/api/chat/message",
+        {
+          date: new Date(),
+          from: user,
+          value: messageValue,
+        }
+      );
     } catch (e) {
       console.error(e);
     }
