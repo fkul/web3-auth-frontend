@@ -1,4 +1,13 @@
-import { Flex, Heading, HStack, Stack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import axios from "axios";
 import React from "react";
 import { Message } from "../types";
 import { UserTag } from "./UserTag";
@@ -8,7 +17,21 @@ interface Props {
 }
 
 export const Messages = ({ data }: Props) => {
+  const toast = useToast();
   const ref = React.useRef<HTMLDivElement>(null);
+
+  const clearChat = async () => {
+    try {
+      await axios.post(process.env.REACT_APP_BACKEND_URL + "/api/chat/clear");
+    } catch (e) {
+      toast({
+        status: "warning",
+        position: "top",
+        description: `${e}`,
+      });
+      console.error(e);
+    }
+  };
 
   React.useEffect(() => {
     if (ref.current) {
@@ -18,7 +41,12 @@ export const Messages = ({ data }: Props) => {
 
   return (
     <Stack flex={1} bg={"whiteAlpha.100"} borderRadius={"md"} p={4}>
-      <Heading>Messages</Heading>
+      <Flex justifyContent={"space-between"}>
+        <Heading>Messages</Heading>
+        <Button size={"xs"} onClick={clearChat}>
+          Clear chat
+        </Button>
+      </Flex>
       <Stack ref={ref} overflowY={"scroll"} height={"100%"} p={2}>
         {data.map(({ date, from, value }, index) => (
           <React.Fragment key={index}>
