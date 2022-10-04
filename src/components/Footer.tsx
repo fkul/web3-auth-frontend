@@ -1,6 +1,6 @@
 import { Box, Button, HStack, Input } from "@chakra-ui/react";
-import axios from "axios";
 import React from "react";
+import { postMessage } from "../api/chat";
 import { Nullable, User } from "../types";
 
 interface Props {
@@ -12,14 +12,10 @@ export const Footer = ({ user }: Props) => {
 
   const onSend = async () => {
     try {
-      await axios.post(
-        process.env.REACT_APP_BACKEND_URL + "/api/chat/message",
-        {
-          date: new Date(),
-          from: user,
-          value: messageValue,
-        }
-      );
+      if (!user) {
+        throw new Error("User didn't join the chat");
+      }
+      await postMessage(user, messageValue);
     } catch (e) {
       console.error(e);
     }

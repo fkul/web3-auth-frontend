@@ -7,8 +7,8 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
 import React from "react";
+import { postClear } from "../api/chat";
 import { Message } from "../types";
 import { UserTag } from "./UserTag";
 
@@ -22,7 +22,7 @@ export const Messages = ({ data }: Props) => {
 
   const clearChat = async () => {
     try {
-      await axios.post(process.env.REACT_APP_BACKEND_URL + "/api/chat/clear");
+      await postClear();
     } catch (e) {
       toast({
         status: "warning",

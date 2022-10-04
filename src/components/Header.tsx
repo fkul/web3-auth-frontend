@@ -7,10 +7,11 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
-import axios from "axios";
 import React from "react";
 import { SiweMessage } from "siwe";
 import { useAccount, useNetwork, useSignMessage } from "wagmi";
+import { getMe, getNonce, postSignOut, postValidate } from "../api/auth";
+import { postJoin, postLeave } from "../api/chat";
 import { Nullable, User } from "../types";
 import { UserTag } from "./UserTag";
 
@@ -30,9 +31,7 @@ export const Header = ({ socketId, user }: Props) => {
 
   const signIn = async () => {
     try {
-      const { data: nonce } = await axios.get(
-        process.env.REACT_APP_BACKEND_URL + "/api/auth/nonce"
-      );
+      const nonce = await getNonce();
 
       if (!address || !chain?.id || !nonce) {
         throw new Error("please connect your wallet first");
@@ -41,23 +40,18 @@ export const Header = ({ socketId, user }: Props) => {
       const message = new SiweMessage({
         domain: window.location.host,
         address,
-        statement: "Hey! Sign in to up your level!",
+        statement: "Hi! Sign in to up your level!",
         uri: window.location.origin,
         version: "1",
         chainId: chain.id,
         nonce,
       });
+
       const signature = await signMessageAsync({
         message: message.prepareMessage(),
       });
 
-      await axios.post(
-        process.env.REACT_APP_BACKEND_URL + "/api/auth/validate",
-        {
-          message,
-          signature,
-        }
-      );
+      await postValidate(message, signature);
       setAuthAddress(address);
     } catch (e) {
       toast({
@@ -69,12 +63,9 @@ export const Header = ({ socketId, user }: Props) => {
     }
   };
 
-  const getMe = async () => {
+  const getAuthAddress = async () => {
     try {
-      const { data } = await axios.get(
-        process.env.REACT_APP_BACKEND_URL + "/api/auth/me"
-      );
-      setAuthAddress(data);
+      setAuthAddress(await getMe());
     } catch (e) {
       console.error(e);
     }
@@ -82,9 +73,7 @@ export const Header = ({ socketId, user }: Props) => {
 
   const signOut = async () => {
     try {
-      await axios.post(
-        process.env.REACT_APP_BACKEND_URL + "/api/auth/sign-out"
-      );
+      await postSignOut();
       setAuthAddress(null);
     } catch (e) {
       console.error(e);
@@ -93,10 +82,7 @@ export const Header = ({ socketId, user }: Props) => {
 
   const join = async () => {
     try {
-      await axios.post(process.env.REACT_APP_BACKEND_URL + "/api/chat/join", {
-        socketId,
-        address: address ?? authAddress,
-      });
+      await postJoin(socketId, address ?? authAddress);
     } catch (e) {
       console.error(e);
     }
@@ -104,16 +90,14 @@ export const Header = ({ socketId, user }: Props) => {
 
   const leave = async () => {
     try {
-      await axios.post(process.env.REACT_APP_BACKEND_URL + "/api/chat/leave", {
-        user,
-      });
+      user && (await postLeave(user));
     } catch (e) {
       console.error(e);
     }
   };
 
   React.useEffect(() => {
-    getMe();
+    getAuthAddress();
   }, []);
 
   React.useEffect(() => {
